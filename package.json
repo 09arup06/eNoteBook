@@ -15,7 +15,7 @@
   },
   "scripts": {
   "predeploy": "concurrently \"npm run build\" \"nodemon backend/index.js\"",
-   "deploy": "gh-pages -d build",
+   "deploy": " concurrently gh-pages -d build \"nodemon backend/index.js\" ",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
