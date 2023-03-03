@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/eNooteBook/static/css/main.598a6723.css",
+    "main.js": "/eNooteBook/static/js/main.63f21fc1.js",
+    "static/js/787.4c65a873.chunk.js": "/eNooteBook/static/js/787.4c65a873.chunk.js",
+    "static/media/vc.jpg": "/eNooteBook/static/media/vc.80e5efc03834270bf237.jpg",
+    "index.html": "/eNooteBook/index.html",
+    "main.598a6723.css.map": "/eNooteBook/static/css/main.598a6723.css.map",
+    "main.63f21fc1.js.map": "/eNooteBook/static/js/main.63f21fc1.js.map",
+    "787.4c65a873.chunk.js.map": "/eNooteBook/static/js/787.4c65a873.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.598a6723.css",
+    "static/js/main.63f21fc1.js"
+  ]
+}
