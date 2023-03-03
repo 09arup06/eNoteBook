@@ -23,7 +23,6 @@ const NoteState=(props)=>{
     }
       //Add a Note
       const addNote= async (title, tag, description)=>{
-        console.log("Added a new Note");
         const response = await fetch(`${host}/notes/addnote`,{
           method: 'POST',
           headers:{
@@ -46,9 +45,8 @@ const NoteState=(props)=>{
           },
         });
         const json = await response.json()
-      console.log(json)
+      
       setNotes(json)
-        console.log("Deleted with id: "+id)
         const newNotes = notes.filter((note)=>{return note._id!==id})
         setNotes(newNotes)
       }
@@ -64,8 +62,7 @@ const NoteState=(props)=>{
           },
           body:JSON.stringify({title,description,tag})
         });
-        const json = await response.json()
-      console.log(json)
+      
       
       let newNotes = JSON.parse(JSON.stringify(notes))
         
