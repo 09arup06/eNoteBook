@@ -34,9 +34,9 @@ function App() {
        <Routes>
         <Route exact path="/about"  element = {<About showAlert={showAlert}/>}/>    
         <Route path="/" element = {<Home showAlert={showAlert}/>}/>
+        <Route path="/*" element = {<Home showAlert={showAlert}/>}/>
         <Route exact path="/login" element = {<Login showAlert={showAlert}/>}/>
         <Route exact path="/register" element = {<Register showAlert={showAlert}/>}/>
-        <Route exact path = "https://09arup06.github.io/eNoteBook/" element={<Login showAlert={showAlert}/>}/>
         <Route exact path="https://09arup06.github.io/eNoteBook/"
          element={ <Home showAlert={showAlert} />}
           />
