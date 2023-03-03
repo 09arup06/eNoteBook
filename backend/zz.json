@@ -1,0 +1,14 @@
+[{
+    "name": "Arup",
+    "email":"a@g.com",
+    "phone_number":1234567890,
+    "city":"Uttarpara",
+    "password":"abcd"
+},
+
+{
+    "title":"School",
+    "description":"I love my school so much",
+    "tag":"ucoh"
+}
+]
