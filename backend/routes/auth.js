@@ -100,6 +100,16 @@ router.post('/login',[
       }
     })
 
+    router.get('/fetchemail',fetchuser,async(req,res)=>{
+      try {
+        const user = await User.distinct("email")
+        res.send(user)
+      } catch (error) {
+        console.log(error.message);
+        res.status(500).send("Internal Server Error from authentication")
+      }
+    })
+
 
 
 module.exports= router

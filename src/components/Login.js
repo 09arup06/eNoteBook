@@ -1,14 +1,17 @@
-import React,{useState} from 'react'
+import React,{useContext, useState} from 'react'
 
 import { useNavigate} from "react-router-dom";
+import NoteContext from '../context/notes/NoteContext';
 
 
 const Login = (props) => {
     const [credentials, setCredentials] = useState({email:"",password:""})
     let navigate= useNavigate();
+    const context = useContext(NoteContext)
+    const {fetchuser}= context
     const handleClick =async (e) => {
         e.preventDefault();
-        
+        // calling backend function for user login   
             const response = await fetch(`http://localhost:5000/api/auth/login`,{
               method: 'POST',
               headers:{
@@ -19,6 +22,9 @@ const Login = (props) => {
             const json = await response.json();
             if(json.success){
                     localStorage.setItem('logintoken',json.token);
+                    const e = credentials.email
+                    localStorage.setItem('user',e)   
+                    fetchuser() 
                     navigate("/")
                     props.showAlert("Successfully Logged in","success")
             }
@@ -29,6 +35,8 @@ const Login = (props) => {
     const onChange = (e) => {
         setCredentials({...credentials,[e.target.name]: e.target.value })
     }
+  
+    
     return (
         
         <div className="container my-5">

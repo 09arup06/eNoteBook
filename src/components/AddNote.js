@@ -7,7 +7,7 @@ const AddNote = (props) => {
     const [note, setNote] = useState({title:"",description:"",tag:"general"})
     const additem=(e)=>{
         e.preventDefault();
-            addNote(note.title,note.tag,note.description,);
+            addNote(note.title,note.tag,note.description,);       //calling addnote function from context tooo add the notes
             props.showAlert("Note Added Successfully","success")
     }
     const onChange=(e)=>{
@@ -18,7 +18,7 @@ const AddNote = (props) => {
         <form className='container my-1'>
   <div className="form-group my-2">
     <label htmlFor="title">Title</label>
-    <input type="text" className="form-control" onChange={onChange} id="title" name="title" required={true} placeholder="TITLE"/>
+    <input type="text" className="form-control" onChange={onChange} id="title" name="title" required={true} placeholder="Enter title of your note"/>
   </div>
   <div className="form-group my-2">
     <label htmlFor="tag">Tag</label>
