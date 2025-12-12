@@ -5,13 +5,13 @@ const NoteItem = (props) => {
     const context = useContext(NoteContext)
     const {deleteNote} = context
     const del = ()=>{
-      deleteNote(note._id)                        // deletenote using a note id to delete
+      deleteNote(note.noteId)                        // deletenote using a note id to delete
       props.showAlert("Deleted Successfully","danger")
     }
   return (
     // Bootstrap Card code for displaying the notes and user can delete and update own notes
     <>
-    <div className='col-md-3'>
+    <div className='col-md-3' style={{ marginLeft: "25px" }}>
     <div className="card my-3 mx-2" style={{width: "18rem"}}>
   <div className="card-body">
     <h5 className="card-title">Title: {note.title}</h5>

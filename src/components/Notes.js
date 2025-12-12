@@ -27,15 +27,33 @@ const Notes = (props) => {
   const updateNote = (currentnote) => {
     //calling a setNote function from context to actually save the note or update the note
     ref.current.click();
-    setNote({ id: currentnote._id, title: currentnote.title, description: currentnote.description, tag: currentnote.tag })
+    setNote({ id: currentnote.noteId, title: currentnote.title, description: currentnote.description, tag: currentnote.tag })
 
   }
-  const handleClick = (e) => {
-    editNote(note.id, note.title, note.description, note.tag)
-    props.showAlert("Updates Successfully", "success")
-    refClose.current.click();
-    props.showAlert("Note Updated Successfully", "success")
-  }
+  const handleClick = async (e) => {
+    e.preventDefault();
+  
+    // Grab the real id from the note object (try common keys)
+    const id = note.noteId || note._id || note.id;
+    if (!id) {
+      console.error("No note id found on note:", note);
+      props.showAlert("Cannot update: note id missing", "danger");
+      return;
+    }
+  
+    try {
+      // If your edit form uses separate state values (etitle, edescription, etag),
+      // pass those instead of note.title etc.
+      await editNote(id, note.title, note.description, note.tag);
+  
+      // close modal and show single success message
+      if (refClose && refClose.current) refClose.current.click();
+      props.showAlert("Note Updated Successfully", "success");
+    } catch (err) {
+      console.error("edit failed:", err);
+      props.showAlert(err.message || "Failed to update note", "danger");
+    }
+  };
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value })
   }
@@ -85,7 +103,7 @@ const Notes = (props) => {
         <div className='container'>
           {notes.length < 1 && "You dont have any notes"}</div>
         {notes.map((note) => {
-          return <NoteItem key={note._id} note={note} showAlert={props.showAlert} updateNote={updateNote} />
+          return <NoteItem key={note.noteId} note={note} showAlert={props.showAlert} updateNote={updateNote} />
 
         })}</div>
     </>

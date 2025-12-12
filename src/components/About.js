@@ -12,7 +12,7 @@ const About = () => {
         backgroundAttachment: "fixed",
         backgroundSize: "contain",
 
-        height: 800, width: 1000
+        height: 600, width: 1000
       }}>
       </div>
       <div className="container" style={{ textAlign: "center" }} ><h2>Arup Bhattacharjee</h2></div>

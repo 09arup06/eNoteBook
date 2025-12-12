@@ -5,37 +5,85 @@ import NoteContext from '../context/notes/NoteContext';
 
 
 const Login = (props) => {
-    const [credentials, setCredentials] = useState({email:"",password:""})
-    let navigate= useNavigate();
-    const context = useContext(NoteContext)
-    const {fetchuser}= context
-    const handleClick =async (e) => {
-        e.preventDefault();
-        // calling backend function for user login   
-            const response = await fetch(`http://localhost:5000/api/auth/login`,{
-              method: 'POST',
-              headers:{
-                'Content-Type':'application/json',
-              },
-              body:JSON.stringify({email:credentials.email,password:credentials.password})
-            });
-            const json = await response.json();
-            if(json.success){
-                    localStorage.setItem('logintoken',json.token);
-                    const e = credentials.email
-                    localStorage.setItem('user',e)   
-                    fetchuser() 
-                    navigate("/")
-                    props.showAlert("Successfully Logged in","success")
-            }
-            else{
-                props.showAlert("Invalid Credentials","danger")
-            }
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  let navigate = useNavigate();
+  const context = useContext(NoteContext);
+  const { fetchuser } = context;
+
+  const API_BASE = process.env.REACT_APP_API_URL;
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+    try {
+      const body = {
+        operation: "login",
+        payload: { email: credentials.email, password: credentials.password },
+      };
+
+      const response = await fetch(`${API_BASE}/Users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      const text = await response.text();
+
+      // Try to parse whatever we received (robust to wrapper or direct JSON)
+      let json;
+      try {
+        json = text ? JSON.parse(text) : {};
+      } catch (e) {
+        console.warn("Could not parse raw response text as JSON:", e);
+        try {
+          // maybe response.json() works (rare if text was not JSON)
+          json = await response.json();
+        } catch (e2) {
+          json = {};
+        }
+      }
+
+      // If API returned the Lambda proxy wrapper, the actual payload is in json.body (a string)
+      if (json && typeof json.body === "string") {
+        try {
+          const inner = JSON.parse(json.body);
+          // merge top-level with inner so inner keys win
+          json = { ...json, ...inner };
+        } catch (e) {
+          console.warn("Could not parse wrapper body:", e);
+        }
+      }
+
+
+      if (!response.ok) {
+        const err = json.error || json.message || "Login failed";
+        props.showAlert(err, "danger");
+        return;
+      }
+
+      if (json && json.token) {
+        // store token under logintoken (your other code reads this)
+        localStorage.setItem("logintoken", json.token);
+        // store minimal user
+        localStorage.setItem("user", JSON.stringify(json.user || { email: credentials.email }));
+        try { await fetchuser(); } catch (ferr) { console.error("fetchuser error:", ferr); }
+        navigate("/");
+        props.showAlert("Successfully Logged in", "success");
+      } else {
+        const err = json.error || json.message || "Invalid Credentials";
+        props.showAlert(err, "danger");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      props.showAlert(err.message || "Network error", "danger");
     }
-    const onChange = (e) => {
-        setCredentials({...credentials,[e.target.name]: e.target.value })
-    }
-  
+  };
+
+  const onChange = (e) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
+
     
     return (
         

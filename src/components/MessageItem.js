@@ -4,7 +4,7 @@ const MessageItem = (props) => {
  return (
     // display messages same as noteitem
     <>
-      <div className='col-md-3'>
+      <div className='col-md-3' style={{ marginLeft: "25px" }}>
         <div className="card my-3 mx-2" style={{ width: "18rem" }}>
           <div className="card-body">
             <h5 className="card-title">Message</h5>

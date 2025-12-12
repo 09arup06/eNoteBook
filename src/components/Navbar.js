@@ -1,6 +1,6 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import "./Home.module.css";
+//import "./Home.module.css";
 import '../App.css';
 
 import {
@@ -54,8 +54,7 @@ const Navbar = (props) => {
                     <i className="fa-solid fa-user-tie" onClick={fetch}></i></span> : ""}
               </div>
               {localStorage.getItem('user') && localStorage.getItem('logintoken') ? <div>
-
-                <span className='nav-item' style={{ color: "red" }}>{localStorage.getItem('user')} </span>
+                <span className='nav-item' style={{ color: "red" }}>{JSON.parse(localStorage.getItem('user'))?.name}</span>
               </div> : ""}
             </div>
           </div>

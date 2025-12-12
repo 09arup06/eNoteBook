@@ -1,36 +1,92 @@
-import React, { useState } from 'react'
+import React,{useContext, useState} from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import NoteContext from '../context/notes/NoteContext';
 const Register = (props) => {
-  const [credentials, setCredentials] = useState({ name: "", email: "", password: "", phone_number: "", city: "" })
+  const [credentials, setCredentials] = useState({ name: "", email: "", password: "", phone_number: "", city: "" });
   let navigate = useNavigate();
+  const context = useContext(NoteContext);
+  const { fetchuser } = context;
+
+  const API_BASE = process.env.REACT_APP_API_URL;
+
   const handleClick = async (e) => {
-    //to stop the page from reloading
     e.preventDefault();
-    // callingg backend api to register a user using basic details
-    const response = await fetch(`http://localhost:5000/api/auth/registration`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name: credentials.name, email: credentials.email, password: credentials.password, phone_number: credentials.phone_number, city: credentials.city })
-    });
-    const json = await response.json();
-    if (json.success) {
-      localStorage.setItem('token', json.logintoken)
-      navigate("/")
-      props.showAlert("Successfully Registered", "success")
-    }
-    else {
-      props.showAlert("Invalid Credentials", "danger")
+    try {
+      const body = {
+        operation: "register",
+        payload: {
+          Item: {
+            name: credentials.name,
+            email: credentials.email,
+            password: credentials.password,
+            phone_number: credentials.phone_number,
+            city: credentials.city,
+          },
+        },
+      };
 
-    }
+      const response = await fetch(`${API_BASE}/Users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
 
+      const text = await response.text();
+
+let json;
+try {
+  json = text ? JSON.parse(text) : {};
+} catch (e) {
+  console.warn("Could not parse raw response text as JSON:", e);
+  try {
+    json = await response.json();
+  } catch (e2) {
+    json = {};
   }
+}
+
+// if response is Lambda proxy wrapper, its body field contains the real JSON string
+if (json && typeof json.body === "string") {
+  try {
+    const inner = JSON.parse(json.body);
+    json = { ...json, ...inner }; // inner fields overwrite wrapper
+  } catch (e) {
+    console.warn("Could not parse wrapper body:", e);
+  }
+}
+
+
+// handle non-2xx responses
+if (!response.ok) {
+  const err = json.error || json.message || "Registration failed";
+  props.showAlert(err, "danger");
+  return;
+}
+
+// on success - store token & user and fetch user context
+if (json && json.token) {
+  localStorage.setItem("logintoken", json.token);
+  localStorage.setItem("user", JSON.stringify(json.user || { email: credentials.email, name: credentials.name }));
+  try { await fetchuser(); } catch (ferr) { console.error("fetchuser after register error:", ferr); }
+  navigate("/");
+  props.showAlert("Successfully Registered", "success");
+} else if (json && json.success) {
+  // success but no token returned (edge case)
+  props.showAlert("Registered successfully, please log in", "success");
+  navigate("/login");
+} else {
+  props.showAlert(json.error || json.message || "Registration failed", "danger");
+}
+    } catch (err) {
+      console.error("Register error:", err);
+      props.showAlert(err.message || "Network error", "danger");
+    }
+  };
+
   const onChange = (e) => {
-    //changing the state of credentials
-    setCredentials({ ...credentials, [e.target.name]: e.target.value })
-  }
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
+
   return (
 
     <div className="container my-5">
